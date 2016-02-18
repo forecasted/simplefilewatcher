@@ -133,6 +133,9 @@ namespace FW
 	{
 		FD_SET(mFD, &mDescriptorSet);
 
+		mTimeOut.tv_sec = 3;
+		mTimeOut.tv_usec = 0;
+		
 		int ret = select(mFD + 1, &mDescriptorSet, NULL, NULL, &mTimeOut);
 		if(ret < 0)
 		{
@@ -153,7 +156,9 @@ namespace FW
 				WatchStruct* watch = mWatches[pevent->wd];
 				if ( pevent!=NULL && pevent->name!=NULL && watch!=NULL ) {
 					handleAction(watch, pevent->name, pevent->mask);
-				} 
+				} else {
+					fprintf (stderr, "something wired, get a null file, skip it... ");
+				}
 				i += sizeof(struct inotify_event) + pevent->len;
 			}
 		}
